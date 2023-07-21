@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Wheelers</title>
+
+    <!-- Adding htmx extension -->
+    <script src="https://unpkg.com/htmx.org@1.9.3"></script>
+    <!-- Extension to process json -->
+    <script src="https://unpkg.com/htmx.org@1.4.1/dist/ext/client-side-templates.js"></script>
+    <!-- Extension to send post request as json -->
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+    <!-- Templating engine to convert json to html -->
+    <script src="https://unpkg.com/mustache@latest"></script>
+
+
+
+    <!-- Adding bulma -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <style>
+        .bike-shop-title {
+            background-color: #8dc2c4;
+            color: #7c2fa2;
+            padding: 16px;
+            text-align: center;
+            margin: 5px
+
+        }
+
+        .bike-title {
+            background-color: #139296;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+
+
+        .bike-adding {
+            background-color: #4edfe5;
+            color: #a22f2f;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .bike-box {
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            margin-bottom: 5px;
+        }
+
+        .cart-button {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+
+        }
+        .custom-text-size {
+            font-size: 50px; /* Change the font size to your desired value */
+        }
+
+    </style>
+</head>
+<body>
+
+<section class= "bike-shop-title">
+    <div class="columns is-vcentered"> <!-- Verwende 'columns' für das Flexbox-Layout -->
+        <div class="column is-one-quarter">
+            <figure class="image is-50x50">
+                <img class="is-rounded" src="https://em-content.zobj.net/source/skype/289/bicycle_1f6b2.png" alt="Bike Picture">
+            </figure>
+        </div>
+        <div class="column">
+            <h1 class="custom-text-size">Wheelie Wonderland 🛒 📫</h1>
+
+            <hr>
+
+            <p>In the enchanting world of "Wheelie Wonderland," cyclists of all ages find their perfect ride,
+                experience the thrill of adventure,
+                and become part of a vibrant biking community, making every journey a memorable chapter in their two-wheeled tale.</p>
+        </div>
+    </div>
+</section>
+
+
+<div hx-ext="client-side-templates">
+    <!-- Overview of all bikes -->
+    <section class="section">
+        <h3 class="bike-title">******      Discover an exquisite array of bikes in our captivating collection, meticulously curated to cater to every rider's desires and preferencess       ******</h3>
+
+        <hr>
+        <!-- Second request -->
+        <div hx-get="http://localhost:8080/suzy/bike-api/bikes"
+             hx-swap="innerHTML"
+             hx-trigger="load"
+             mustache-template="bikesListTemplate" >
+            Loading all bikes
+        </div>
+    </section>
+    <hr>
+    <!-- Featured bike with picture -->
+    <section class="bike-title" id="mainBike">
+        <h4 class="title">🚴️ Today´s special offer 🚴️</h4>
+        <!-- This is retrieved dynamically from the backend !-->
+        <div hx-get="http://localhost:8080/suzy/bike-api/random-bike"
+             hx-swap="innerHTML"
+             hx-trigger="load"
+             mustache-template="singleBikeTemplate">
+            ... loading random bike
+        </div>
+    </section>
+    <hr>
+
+    <!-- Form for adding a new bike -->
+    <section class="bike-adding">
+        <h2 class="title is-3 p-3 has-text-centered">Add new bike</h2>
+        <div>
+            <form hx-post="http://localhost:8080/suzy/bike-api/bikes"
+                  hx-swap="beforeend"
+                  hx-target="#bike-items"
+                  mustache-template="bikesSingleListElementTemplate"
+                  hx-ext='json-enc'>
+                <div class="field">
+                    <label class="label" for="brand">Brand:</label>
+                    <div class="control">
+                        <input class="input" type="text" id="brand" name="brand" value="WOW">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label" for="model">Model:</label>
+                    <div class="control">
+                        <input class="input" type="text" id="model" name="model" value="ElvenLabs">
+                    </div>
+                </div>
+
+
+                <div class="field">
+                    <label class="label" for="color">Color:</label>
+                    <div class="control">
+                        <input class="input" type="text" id="color" name="color" value="Red">
+                    </div>
+                </div>
+
+
+                <div class="field">
+                    <label class="label" for="weight">Weight:</label>
+                    <div class="control">
+                        <input class="input" type="number" id="weight" name="weight" step="0.01" value="9.5">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label" for="price">Price:</label>
+                    <div class="control">
+                        <input class="input" type="number" id="price" name="price" step="0.01" value="1499.99">
+                    </div>
+                </div>
+
+
+                <div class="field">
+                    <label class="label" for="pictureLink">Picture Link:</label>
+                    <div class="control">
+                        <input class="input" type="text" id="pictureLink" name="pictureLink" value="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Left_side_of_Flying_Pigeon.jpg/1280px-Left_side_of_Flying_Pigeon.jpg">
+                    </div>
+                </div>
+
+
+
+                <div class="field">
+                    <label class="label" for="electric">Electric:</label>
+                    <div class="control">
+                        <label class="checkbox">
+                            <input type="checkbox" id="electric" name="electric" value="true">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="field is-grouped">
+                    <div class="control">
+                        <button class="button is-primary" type="submit">Submit</button>
+                    </div>
+                </div>
+            </form>
+            </form>
+        </div>
+    </section>
+
+    <!-- This template is used to render a detailed view of a single bike -->
+    <template id="singleBikeTemplate">
+        <div class="columns">
+            <div class="column">
+                <h3 class="title is-4">{{name}} {{model}}</h3>
+                <ul>
+                    <li><strong>ID:</strong> {{id}}</li>
+                    <li><strong>Color:</strong> {{color}}</li>
+                    <li><strong>Electric:</strong> {{#electric}}Yes{{/electric}}{{^electric}}No{{/electric}}</li>
+                    <li><strong>Weight:</strong> {{weight}}kg</li>
+                    <li><strong>Stock:</strong> {{stock}}</li>
+                    <li><strong>Price:</strong> {{price}}€</li>
+                </ul>
+            </div>
+
+            <div class="column is-one-quarter">
+                <img class="image" src="{{pictureLink}}" alt="Bike Picture">
+            </div>
+        </div>
+    </template>
+
+    <!-- This template is used to render the whole overview of bikes -->
+    <template id="bikesListTemplate">
+        <section class="section">
+            <div class="columns is-mobile is-multiline is-centered" id="bike-items" >
+
+                {{#bikeList}}
+                <div class="column is-one-third">
+                    <div class="bike-box">
+                        <figure class="image is-200x200">
+                            <img class="image" src="{{pictureLink}}" alt="Bike Picture">
+                        </figure>
+                        <h3 class="title is-4">{{name}}</h3>
+                        <p>Model: {{model}}</p>
+
+                        <p>Color: {{color}}</p>
+                        <p>Weight: {{weight}}kg</p>
+                        <p>Stock: {{stock}}</p>
+                        <p>Price: {{price}}</p>
+                        <div class="cart-button">
+                            <button class="button is-primary">Buy Bike 🚴️ </button>
+                        </div>
+                    </div>
+                </div>
+                {{/bikeList}}
+                <div>
+        </section>
+    </template>
+
+    <!-- This template is used for a single item in the bike overview -->
+    <template id="bikesSingleListElementTemplate">
+                <div class="column is-one-fifth">
+                    <div class="bike-box">
+                        <figure class="image is-100x100">
+                            <img class="image" src="{{pictureLink}}" alt="Bike Picture">
+                        </figure>
+                        <h3 class="title is-4">{{name}}</h3>
+                        <p>Model: {{model}}</p>
+                        <p>Price: {{price}}</p>
+                        <p>Color: {{color}}</p>
+                        <p>Weight: {{weight}}kg</p>
+                        <p>Stock: {{stock}}</p>
+                        <div class="cart-button">
+                            <button class="button is-primary">Buy Bike 🚴️ </button>
+                        </div>
+                    </div>
+                </div>
+                <button hx-get="http://localhost:8080/suzy/bike-api/bikes/{{id}}"
+                        hx-swap="innerHTML"
+                        hx-target="#mainBike"
+                        mustache-template="singleBikeTemplate"
+                        class="bike-box">
+                    Show details
+
+    </template>
+</div>
+</body>
+</html>
